@@ -1,4 +1,4 @@
 Bitgold
 =======
 
-A small library that makes light work of adding Bitcoin transactions to Unity games.
+A small library that makes light work of Bitcoin transactions in Unity games.
