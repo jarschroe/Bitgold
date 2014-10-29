@@ -1,0 +1,15 @@
+TODO:
+
+BgApiController.cs-
+- CurrencyToBitcoin - value to Bitcoin (current function), or currency to Bitcoin (i.e. ret=currencyInBitcoin, args=(currency))?
+- validate
+
+
+BgPlayer.cs-
+- BgPlayer - validate address and privateKey
+
+BgDeveloper.cs-
+- BgDeveloper - validate address
+
+BgTransaction.cs-
+- BgTransaction - validate value
