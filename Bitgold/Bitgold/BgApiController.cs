@@ -20,6 +20,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using Newtonsoft.Json;
+
 namespace Bitgold
 {
     public enum BgCurrency
@@ -40,6 +42,13 @@ namespace Bitgold
         {
             // TODO: validate
             return 0.0f;
+        }
+
+        public BgTransaction TestJSON(BgTransaction transaction)
+        {
+            string json = JsonConvert.SerializeObject(transaction, Formatting.Indented);
+            BgTransaction fromJson = JsonConvert.DeserializeObject<BgTransaction>(json);
+            return fromJson;
         }
     }
 }
