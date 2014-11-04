@@ -21,6 +21,8 @@
 // THE SOFTWARE.
 
 using Newtonsoft.Json;
+using System.Net;
+using System.IO;
 
 namespace Bitgold
 {
@@ -32,6 +34,8 @@ namespace Bitgold
 
     public class BgApiController
     {
+        static string BlockchainBaseUrl = "https://blockchain.info/";
+
         public string SubmitTransaction(BgTransaction transaction)
         {
             return "error";
@@ -41,7 +45,14 @@ namespace Bitgold
         public float CurrencyToBitcoin(BgCurrency currency, float value)
         {
             // TODO: validate
-            return 0.0f;
+            // request the currency conversion
+            WebRequest request = WebRequest.Create(BlockchainBaseUrl + "tobtc?currency=" + currency.ToString() + "&value=" + value.ToString());
+            WebResponse response = request.GetResponse();
+            Stream stream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(stream);
+            // get the response
+            float result = float.Parse(reader.ReadToEnd());
+            return result;
         }
 
         public BgTransaction TestJSON(BgTransaction transaction)

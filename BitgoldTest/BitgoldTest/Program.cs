@@ -37,6 +37,8 @@ namespace BitgoldTest
             // do transaction (currently does nothing)
             BgApiController api = new BgApiController();
             api.SubmitTransaction(transaction);
+
+            float valueInBitcoin = api.CurrencyToBitcoin(BgCurrency.AUD, value);
         }
     }
 }
