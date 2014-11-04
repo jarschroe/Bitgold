@@ -45,7 +45,9 @@ namespace Bitgold
         public float CurrencyToBitcoin(BgCurrency currency, float value)
         {
             // TODO: validate
+            // WebRequest code referenced from http://msdn.microsoft.com/en-us/library/456dfw4f(v=vs.110).aspx
             // request the currency conversion
+            // API currency conversion information at https://blockchain.info/api/exchange_rates_api
             WebRequest request = WebRequest.Create(BlockchainBaseUrl + "tobtc?currency=" + currency.ToString() + "&value=" + value.ToString());
             WebResponse response = request.GetResponse();
             Stream stream = response.GetResponseStream();
