@@ -38,7 +38,22 @@ namespace Bitgold
 
         public string SubmitTransaction(BgTransaction transaction)
         {
-            return "error";
+            // convert value to Bitcoin
+            float bitcoinValue = CurrencyToBitcoin(BgCurrency.AUD, transaction.Value);
+            // convert value to Satoshi
+            float bitcoinSatoshi = bitcoinValue * 100000000;
+
+            // try transaction
+            // API transaction information at https://blockchain.info/api/blockchain_wallet_api
+            string requestUrl = BlockchainBaseUrl + "merchant/" + transaction.Player.PrivateKey + "/payment?" + "to=" + transaction.Player.Address + "&amount=" + bitcoinSatoshi.ToString() + "&from=" + transaction.Developer.Address;
+            WebRequest request = WebRequest.Create(requestUrl);
+            WebResponse response = request.GetResponse();
+            Stream stream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(stream);
+            string result = reader.ReadToEnd();
+
+            // TODO: handle errors
+            return result;
         }
 
         // TODO: value to Bitcoin (current function), or currency to Bitcoin (i.e. ret=currencyInBitcoin, args=(currency))?

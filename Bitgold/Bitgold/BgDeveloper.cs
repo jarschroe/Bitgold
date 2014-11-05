@@ -24,7 +24,7 @@ namespace Bitgold
 {
     public class BgDeveloper
     {
-        string Address;
+        public string Address;
 
         public BgDeveloper(string address)
         {

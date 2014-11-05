@@ -24,8 +24,8 @@ namespace Bitgold
 {
     public class BgPlayer
     {
-        string Address;
-        string PrivateKey;
+        public string Address;
+        public string PrivateKey;
 
         public BgPlayer(string address, string privateKey)
         {

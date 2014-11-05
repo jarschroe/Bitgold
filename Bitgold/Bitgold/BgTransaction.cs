@@ -24,9 +24,9 @@ namespace Bitgold
 {
     public class BgTransaction
     {
-        BgDeveloper Developer;
-        BgPlayer Player;
-        float Value;
+        public BgDeveloper Developer { get; private set; }
+        public BgPlayer Player { get; private set; }
+        public float Value;
         BgCurrency Currency;
 
         public BgTransaction(BgDeveloper developer, BgPlayer player, float value, BgCurrency currency = BgCurrency.AUD)

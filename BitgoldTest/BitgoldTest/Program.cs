@@ -21,6 +21,8 @@
 // THE SOFTWARE.
 
 using Bitgold;
+using System;
+using System.IO;
 
 namespace BitgoldTest
 {
@@ -29,16 +31,18 @@ namespace BitgoldTest
         static void Main(string[] args)
         {
             // create parties
-            BgDeveloper developer = new BgDeveloper("");
-            BgPlayer player = new BgPlayer("", "");
+            string address = "18R3k1bCPKmD6oNtE5rBq2pwut8i2d8SEB";
+            BgDeveloper developer = new BgDeveloper(address);
+            string key = new StreamReader("E:/New Text Document.txt").ReadToEnd();
+            BgPlayer player = new BgPlayer(address, key);
             // dummy transaction ($0.99)
             float value = 0.99f;
             BgTransaction transaction = new BgTransaction(developer, player, value);
             // do transaction (currently does nothing)
             BgApiController api = new BgApiController();
-            api.SubmitTransaction(transaction);
-
-            float valueInBitcoin = api.CurrencyToBitcoin(BgCurrency.AUD, value);
+            string result = api.SubmitTransaction(transaction);
+            Console.Write("Result: " + result);
+            Console.Read();
         }
     }
 }
