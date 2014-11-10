@@ -3,6 +3,8 @@
 
 using UnityEngine;
 using System.Collections;
+using Bitgold;
+using System.IO;
 
 public class Shop : MonoBehaviour {
 
@@ -18,11 +20,28 @@ public class Shop : MonoBehaviour {
 	static float ItemButtonHeight = 80.0f;
 	float ItemsXSpace = ItemButtonWidth + 20.0f;
 	float ItemsYSpace = ItemButtonHeight + 30.0f;
+	// Bitgold
+	BgDeveloper developer = new BgDeveloper("18R3k1bCPKmD6oNtE5rBq2pwut8i2d8SEB");
 
-	public string[][] ItemNames = new string[][]
+	public class ShopItem
 	{
-		new string[] { "item1", "item2", "item3", "item4" },
-		new string[] { "item5", "item6", "item7", "item8" }
+		public string content;
+		public float cost;
+
+		public ShopItem(string content, float cost)
+		{
+			this.content = content;
+			this.cost = cost;
+		}
+
+		// TODO: function to call when the shop item is paid for (i.e. unlock god mode or something)  
+		// public void OnPaid()
+	};
+
+	ShopItem[][] ShopItems = new ShopItem[][]
+	{
+		new ShopItem[] { new ShopItem("item1", 0.99f), new ShopItem("item2", 0.99f), new ShopItem("item3", 0.99f), new ShopItem("item4", 0.99f) },
+		new ShopItem[] { new ShopItem("item5", 1.99f), new ShopItem("item6", 2.99f), new ShopItem("item7", 4.99f), new ShopItem("item8", 9.99f) }
 	};
 
 	// Use this for initialization
@@ -78,17 +97,26 @@ public class Shop : MonoBehaviour {
 		if (PanStop == true)
 		{
 			// shop buttons
-			for (int i = 0; i < ItemNames.Length; ++i)
+			for (int i = 0; i < ShopItems.Length; ++i)
 			{
-				for (int j = 0; j < ItemNames[i].Length; ++j)
+				for (int j = 0; j < ShopItems[i].Length; ++j)
 				{
-					if (GUI.Button(new Rect(ItemsStartX+j*ItemsXSpace, ItemsStartY+i*ItemsYSpace, ItemButtonWidth, ItemButtonHeight), ItemNames[i][j], myButtonStyle))
+					if (GUI.Button(new Rect(ItemsStartX+j*ItemsXSpace, ItemsStartY+i*ItemsYSpace, ItemButtonWidth, ItemButtonHeight), ShopItems[i][j].content + "\n$" + ShopItems[i][j].cost.ToString(), myButtonStyle))
 					{
-						// do Bitgold stuff
+						// do Bitgold transaction
+						// get player credentials
+						string playerAddress = "18R3k1bCPKmD6oNtE5rBq2pwut8i2d8SEB"; // same as developer for now...
+						string key = new StreamReader("D:/New Text Document.txt").ReadToEnd();
+						BgPlayer player = new BgPlayer(playerAddress, key);
+						BgTransaction transaction = new BgTransaction(developer, player, ShopItems[i][j].cost, BgCurrency.AUD);
+						// do transaction (currently just prints the response to the console)
+						BgApiController api = new BgApiController();
+						string result = api.SubmitTransaction(transaction) + ShopItems[i][j].cost.ToString();
+						Debug.Log(result);
 					}
 				}
 			}
-
+			
 			// back button
 			if (GUI.Button(new Rect(Screen.width/16.0f, Screen.height - Screen.height/8.0f, 100, 40), "Back", myButtonStyle))
 			{				

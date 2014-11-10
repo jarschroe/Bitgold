@@ -1,0 +1,4 @@
+TODO:
+
+shop.cs-
+-ShopItem constructor - function to call when the shop item is paid for (i.e. unlock god mode or something)
