@@ -36,7 +36,13 @@ namespace Bitgold
     {
         static string BlockchainBaseUrl = "https://blockchain.info/";
 
-        public string SubmitTransaction(BgTransaction transaction)
+        public class BlockchainResponse
+        {
+            public string Message {get; set;}
+            public string ResponseMessage { get; set; }
+        };
+
+        public bool SubmitTransaction(BgTransaction transaction)
         {
             // convert value to Bitcoin
             float bitcoinValue = CurrencyToBitcoin(BgCurrency.AUD, transaction.Value);
@@ -50,10 +56,15 @@ namespace Bitgold
             WebResponse response = request.GetResponse();
             Stream stream = response.GetResponseStream();
             StreamReader reader = new StreamReader(stream);
-            string result = reader.ReadToEnd();
+            string result = reader.ReadToEnd().Trim(new char[]{'\\'});
+            // try http://stackoverflow.com/questions/8383409/remove-char-from-string-c-sharp
+
+            //JObject obj = ParseResponse(
+
+            BlockchainResponse bcResponse = JsonConvert.DeserializeObject<BlockchainResponse>(@result);
 
             // TODO: handle errors
-            return result;
+            return false;
         }
 
         // TODO: value to Bitcoin (current function), or currency to Bitcoin (i.e. ret=currencyInBitcoin, args=(currency))?
