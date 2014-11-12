@@ -3,6 +3,8 @@ TODO:
 BgApiController.cs-
 - CurrencyToBitcoin - value to Bitcoin (current function), or currency to Bitcoin (i.e. ret=currencyInBitcoin, args=(currency))?
 - validate
+- Properties - place these in an array ordered with reference to BgApiResult.Type
+- SubmitTransaction - handle transaction hash in JSON response
 
 
 BgPlayer.cs-

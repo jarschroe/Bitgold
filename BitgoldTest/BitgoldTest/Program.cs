@@ -40,8 +40,8 @@ namespace BitgoldTest
             BgTransaction transaction = new BgTransaction(developer, player, value);
             // do transaction (currently does nothing)
             BgApiController api = new BgApiController();
-            bool result = api.SubmitTransaction(transaction);
-            Console.Write("Result: " + result);
+            BgApiResult result = api.SubmitTransaction(transaction);
+            Console.Write("Result: " + result.Type.ToString() + result.Message);
             Console.Read();
         }
     }

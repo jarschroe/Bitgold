@@ -23,6 +23,7 @@
 using Newtonsoft.Json;
 using System.Net;
 using System.IO;
+using Newtonsoft.Json.Linq;
 
 namespace Bitgold
 {
@@ -32,17 +33,28 @@ namespace Bitgold
         AUD
     }
 
+    public class BgApiResult
+    {
+        public enum ResultType
+        {
+            MESSAGE,
+            ERROR
+        }
+
+        public ResultType Type { get; set; }
+        public string Message { get; set; }
+    };
+
     public class BgApiController
     {
         static string BlockchainBaseUrl = "https://blockchain.info/";
+        static string WebContentType = "application/json, charset=utf-8";
+        // Blockchain API message types references from https://blockchain.info/api/blockchain_wallet_api
+        // TODO: place these in an array ordered with reference to BgApiResult.Type
+        static string BlockchainMessageResponse = "message";
+        static string BlockchainErrorResponse = "error";
 
-        public class BlockchainResponse
-        {
-            public string Message {get; set;}
-            public string ResponseMessage { get; set; }
-        };
-
-        public bool SubmitTransaction(BgTransaction transaction)
+        public BgApiResult SubmitTransaction(BgTransaction transaction)
         {
             // convert value to Bitcoin
             float bitcoinValue = CurrencyToBitcoin(BgCurrency.AUD, transaction.Value);
@@ -53,18 +65,34 @@ namespace Bitgold
             // API transaction information at https://blockchain.info/api/blockchain_wallet_api
             string requestUrl = BlockchainBaseUrl + "merchant/" + transaction.Player.PrivateKey + "/payment?" + "to=" + transaction.Player.Address + "&amount=" + bitcoinSatoshi.ToString() + "&from=" + transaction.Developer.Address;
             WebRequest request = WebRequest.Create(requestUrl);
+            request.ContentType = WebContentType;
             WebResponse response = request.GetResponse();
             Stream stream = response.GetResponseStream();
             StreamReader reader = new StreamReader(stream);
-            string result = reader.ReadToEnd().Trim(new char[]{'\\'});
-            // try http://stackoverflow.com/questions/8383409/remove-char-from-string-c-sharp
 
-            //JObject obj = ParseResponse(
+            // retrieve the transaction result from the JSON response
+            JObject jsonResponse = JObject.Parse(reader.ReadToEnd());
+            BgApiResult result = new BgApiResult();
 
-            BlockchainResponse bcResponse = JsonConvert.DeserializeObject<BlockchainResponse>(@result);
+            // find the type of response, and then set the response message accordingly
+            if ((string)jsonResponse[BlockchainMessageResponse] != null)
+            {
+                result.Type = BgApiResult.ResultType.MESSAGE;
+                result.Message = (string)jsonResponse[BlockchainMessageResponse];
+                // TODO: handle transaction hash in JSON response
+            }
+            else if ((string)jsonResponse[BlockchainErrorResponse] != null)
+            {
+                result.Type = BgApiResult.ResultType.ERROR;
+                result.Message = (string)jsonResponse[BlockchainErrorResponse];
+            }
+            else
+            {
+                // unrecognised response
+                result = null;
+            }
 
-            // TODO: handle errors
-            return false;
+            return result;
         }
 
         // TODO: value to Bitcoin (current function), or currency to Bitcoin (i.e. ret=currencyInBitcoin, args=(currency))?
@@ -75,6 +103,7 @@ namespace Bitgold
             // request the currency conversion
             // API currency conversion information at https://blockchain.info/api/exchange_rates_api
             WebRequest request = WebRequest.Create(BlockchainBaseUrl + "tobtc?currency=" + currency.ToString() + "&value=" + value.ToString());
+            request.ContentType = WebContentType;
             WebResponse response = request.GetResponse();
             Stream stream = response.GetResponseStream();
             StreamReader reader = new StreamReader(stream);
