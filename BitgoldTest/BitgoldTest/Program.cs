@@ -31,17 +31,18 @@ namespace BitgoldTest
         static void Main(string[] args)
         {
             // create parties
-            string address = "18R3k1bCPKmD6oNtE5rBq2pwut8i2d8SEB";
-            BgDeveloper developer = new BgDeveloper(address);
-            string key = new StreamReader("E:/New Text Document.txt").ReadToEnd();
-            BgPlayer player = new BgPlayer(address, key);
+            string devAddress = "18R3k1bCPKmD6oNtE5rBq2pwut8i2d8SEB";
+            BgDeveloper developer = new BgDeveloper(devAddress);
+            string key = new StreamReader("H:/New Text Document.txt").ReadToEnd();
+            string playerAddress = "16q6tj1wCAYbdVg7yWDngtnYmCeAUBAR2Q";
+            BgPlayer player = new BgPlayer(playerAddress, key);
             // dummy transaction ($0.99)
             float value = 0.99f;
             BgTransaction transaction = new BgTransaction(developer, player, value);
             // do transaction (currently does nothing)
             BgApiController api = new BgApiController();
             BgApiResult result = api.SubmitTransaction(transaction);
-            Console.Write("Result: " + result.Type.ToString() + result.Message);
+            Console.Write("Result: " + result.Type.ToString() + ": " + result.Message);
             Console.Read();
         }
     }

@@ -63,7 +63,7 @@ namespace Bitgold
 
             // try transaction
             // API transaction information at https://blockchain.info/api/blockchain_wallet_api
-            string requestUrl = BlockchainBaseUrl + "merchant/" + transaction.Player.PrivateKey + "/payment?" + "to=" + transaction.Player.Address + "&amount=" + bitcoinSatoshi.ToString() + "&from=" + transaction.Developer.Address;
+            string requestUrl = BlockchainBaseUrl + "merchant/" + transaction.Player.PrivateKey + "/payment?" + "to=" + transaction.Developer.Address + "&amount=" + bitcoinSatoshi.ToString() + "&from=" + transaction.Player.Address;
             WebRequest request = WebRequest.Create(requestUrl);
             request.ContentType = WebContentType;
             WebResponse response = request.GetResponse();
@@ -102,7 +102,8 @@ namespace Bitgold
             // WebRequest code referenced from http://msdn.microsoft.com/en-us/library/456dfw4f(v=vs.110).aspx
             // request the currency conversion
             // API currency conversion information at https://blockchain.info/api/exchange_rates_api
-            WebRequest request = WebRequest.Create(BlockchainBaseUrl + "tobtc?currency=" + currency.ToString() + "&value=" + value.ToString());
+            string requestUrl = BlockchainBaseUrl + "tobtc?currency=" + currency.ToString() + "&value=" + value.ToString();
+            WebRequest request = WebRequest.Create(requestUrl);
             request.ContentType = WebContentType;
             WebResponse response = request.GetResponse();
             Stream stream = response.GetResponseStream();
