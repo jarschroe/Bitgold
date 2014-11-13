@@ -27,15 +27,12 @@ namespace Bitgold
         public BgDeveloper Developer { get; private set; }
         public BgPlayer Player { get; private set; }
         public float Value;
-        BgCurrency Currency;
 
-        public BgTransaction(BgDeveloper developer, BgPlayer player, float value, BgCurrency currency = BgCurrency.AUD)
+        public BgTransaction(BgDeveloper developer, BgPlayer player, float value)
         {
             Developer = developer;
             Player = player;
-            // TODO: validate value
             Value = value;
-            Currency = currency;
         }
     }
 }

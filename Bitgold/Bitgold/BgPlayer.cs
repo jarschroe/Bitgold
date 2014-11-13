@@ -26,12 +26,14 @@ namespace Bitgold
     {
         public string Address;
         public string PrivateKey;
+        public BgCurrency Currency;
 
-        public BgPlayer(string address, string privateKey)
+        public BgPlayer(string address, string privateKey, BgCurrency currency)
         {
             // TODO: validate address and privateKey
             Address = address;
             PrivateKey = privateKey;
+            Currency = currency;
         }
     }
 }

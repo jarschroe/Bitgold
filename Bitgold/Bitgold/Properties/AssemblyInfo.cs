@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Bitgold")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("AIE.EDU.AU")]
+[assembly: AssemblyCompany("Jared Schroeder")]
 [assembly: AssemblyProduct("Bitgold")]
-[assembly: AssemblyCopyright("Copyright © AIE.EDU.AU 2014")]
+[assembly: AssemblyCopyright("Copyright © Jared Schroeder 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

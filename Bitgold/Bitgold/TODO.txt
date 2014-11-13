@@ -1,17 +1,10 @@
 TODO:
 
-BgApiController.cs-
-- CurrencyToBitcoin - value to Bitcoin (current function), or currency to Bitcoin (i.e. ret=currencyInBitcoin, args=(currency))?
-- validate
-- Properties - place these in an array ordered with reference to BgApiResult.Type
-- SubmitTransaction - handle transaction hash in JSON response
-
-
 BgPlayer.cs-
 - BgPlayer - validate address and privateKey
 
 BgDeveloper.cs-
 - BgDeveloper - validate address
 
-BgTransaction.cs-
-- BgTransaction - validate value
+BgApiController.cs-
+- SubmitTransaction - insufficient funds error may return required and available funds in Satoshi - so handle this information in some way
