@@ -34,7 +34,7 @@ namespace BitgoldTest
             string devAddress = "18R3k1bCPKmD6oNtE5rBq2pwut8i2d8SEB";
             BgDeveloper developer = new BgDeveloper(devAddress);
             // create player
-            string key = new StreamReader("H:/New Text Document.txt").ReadToEnd();
+            string key = new StreamReader("E:/New Text Document.txt").ReadToEnd();
             string playerAddress = "16q6tj1wCAYbdVg7yWDngtnYmCeAUBAR2Q";
             BgPlayer player = new BgPlayer(playerAddress, key, BgCurrency.AUD);
             float value = 0.99f; // $0.99c transaction

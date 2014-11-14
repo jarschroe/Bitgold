@@ -27,14 +27,6 @@ using System.Net;
 
 namespace Bitgold
 {
-    public enum BgCurrency
-    {
-        // refer to http://www.xe.com/iso4217.php for currency codes
-        AUD,
-
-        CURRENCY_COUNT
-    }
-
     public class BgApiResult
     {
         public enum ResultType
