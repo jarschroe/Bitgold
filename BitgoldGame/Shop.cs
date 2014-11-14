@@ -27,15 +27,52 @@ public class Shop : MonoBehaviour {
 	{
 		public string content;
 		public float cost;
+		bool bought;
+		public bool Bought
+		{
+			get
+			{
+				return bought;
+			}
+			set 
+			{
+				bought = true;
+				content += "\nBOUGHT";
+				// remove the cost
+				cost = 0.0f;
+				// unlock the bought effect
+				Toggle();
+			}
+		}
+		public bool InEffect { get; private set; }
 
 		public ShopItem(string content, float cost)
 		{
 			this.content = content;
 			this.cost = cost;
+			bought = false;
+			InEffect = false;
 		}
 
-		// TODO: function to call when the shop item is paid for (i.e. unlock god mode or something)  
-		// public void OnPaid()
+		public void Toggle()
+		{
+			InEffect = !InEffect;
+
+			// do the effect if the shop item has been toggled on
+			// TODO: set this up so each shop item can have unique effects (with delegates maybe?)
+			if (InEffect)
+			{
+				// flip camera upside down
+				Vector3 newRotationEular = new Vector3(Camera.main.transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, (Camera.main.transform.eulerAngles.z + 180.0f) % 360.0f);
+				Camera.main.transform.eulerAngles = newRotationEular;
+			}
+			else
+			{
+				// unflip camera
+				Vector3 newRotationEular = new Vector3(Camera.main.transform.eulerAngles.x, Camera.main.transform.eulerAngles.y, (Camera.main.transform.eulerAngles.z + 180.0f) % 360.0f);
+				Camera.main.transform.eulerAngles = newRotationEular;
+			}
+		}
 	};
 
 	ShopItem[][] ShopItems = new ShopItem[][]
@@ -43,6 +80,8 @@ public class Shop : MonoBehaviour {
 		new ShopItem[] { new ShopItem("item1", 0.99f), new ShopItem("item2", 0.99f), new ShopItem("item3", 0.99f), new ShopItem("item4", 0.99f) },
 		new ShopItem[] { new ShopItem("item5", 1.99f), new ShopItem("item6", 2.99f), new ShopItem("item7", 4.99f), new ShopItem("item8", 9.99f) }
 	};
+
+	string TransactionResultText = string.Empty;
 
 	// Use this for initialization
 	void Start () 
@@ -87,11 +126,18 @@ public class Shop : MonoBehaviour {
 		
 		myButtonStyle.normal.textColor = Color.white; 	 			
 		myButtonStyle.hover.textColor = colour;
-		
+
 		// Load and set Font
 		Font myFont = (Font)Resources.Load("NEUROPOL", typeof(Font));
 		myButtonStyle.font = myFont;
 		// \Author
+
+		GUIStyle resultButton = new GUIStyle(GUI.skin.button);
+		resultButton.fontSize = 25;
+		resultButton.wordWrap = true;
+		resultButton.normal.textColor = Color.white; 	 			
+		resultButton.hover.textColor = colour;
+		resultButton.font = myFont;
 
 		// display buttons when camera has reached shop position
 		if (PanStop == true)
@@ -103,17 +149,58 @@ public class Shop : MonoBehaviour {
 				{
 					if (GUI.Button(new Rect(ItemsStartX+j*ItemsXSpace, ItemsStartY+i*ItemsYSpace, ItemButtonWidth, ItemButtonHeight), ShopItems[i][j].content + "\n$" + ShopItems[i][j].cost.ToString(), myButtonStyle))
 					{
-						// do Bitgold transaction
-						// get player credentials
-						string playerAddress = "18R3k1bCPKmD6oNtE5rBq2pwut8i2d8SEB"; // same as developer for now...
-						string key = new StreamReader("D:/New Text Document.txt").ReadToEnd();
-						BgPlayer player = new BgPlayer(playerAddress, key);
-						BgTransaction transaction = new BgTransaction(developer, player, ShopItems[i][j].cost, BgCurrency.AUD);
-						// do transaction (currently just prints the response to the console)
-						BgApiController api = new BgApiController();
-						string result = api.SubmitTransaction(transaction) + ShopItems[i][j].cost.ToString();
-						Debug.Log(result);
+						ShopItem clickedItem = ShopItems[i][j];
+
+						if (clickedItem.Bought == true)
+						{
+							// item has been bought already, so just toggle the item's effect on and off
+							clickedItem.Toggle();
+						}
+						else
+						{
+							// do Bitgold transaction
+							// get player credentials
+							string playerAddress = "16q6tj1wCAYbdVg7yWDngtnYmCeAUBAR2Q";
+							string key = new StreamReader("E:/New Text Document.txt").ReadToEnd();
+							BgPlayer player = new BgPlayer(playerAddress, key, BgCurrency.AUD);
+							BgTransaction transaction = new BgTransaction(developer, player, ShopItems[i][j].cost);
+							// do transaction (currently just prints the response to the console)
+							BgApiController api = new BgApiController();
+							BgApiResult result = api.SubmitTransaction(transaction);
+							
+							// handle transaction result
+							switch (result.Type)
+							{
+							case BgApiResult.ResultType.SUCCESS:
+							{
+								TransactionResultText = "Success!\nTransaction details: " + result.Message + "\nTransaction hash: " + result.TransactionHash + "\nNote: " + result.Notice;
+								// register the button as being bought
+								clickedItem.Bought = true;
+								break;
+							}
+							case BgApiResult.ResultType.ERROR:
+							{
+								TransactionResultText = "Failed!\nError details:\n" + result.Message;
+								break;
+							}
+							default:
+							{
+								TransactionResultText = "Failed for an unknown reason!";
+								break;
+							}
+							}
+						}
 					}
+				}
+			}
+
+			if (TransactionResultText.Length > 0)
+			{
+				// create a button that shows the transaction result
+				if (GUI.Button(new Rect(Screen.width/8.0f, Screen.height/8.0f, Screen.width*0.75f, Screen.height*0.75f), TransactionResultText, resultButton))
+				{
+					// empty the result string to remove the button when the user clicks it
+					TransactionResultText = string.Empty;
 				}
 			}
 			
