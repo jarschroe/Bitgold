@@ -136,6 +136,7 @@ namespace Bitgold
                     StreamReader reader = new StreamReader(stream);
                     // get the response
                     float result = float.Parse(reader.ReadToEnd());
+                    // TODO: handle currency conversion error response
                     return result;
                 }
                 else

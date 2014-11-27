@@ -8,3 +8,4 @@ BgDeveloper.cs-
 
 BgApiController.cs-
 - SubmitTransaction - insufficient funds error may return required and available funds in Satoshi - so handle this information in some way
+- ValueToBitcoin - handle currency conversion error response
